@@ -1,0 +1,104 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  JAVA_VERSION: '21'
+  JDK_VERSION: '1.21'
+  WEB_APP_NAME: 'sprint4-clyvo-rm565698'
+  ARTIFACT_NAME: 'app'
+  TEST_RUN_TITLE: 'Sprint 4 - Clyvo'
+
+stages:
+  - stage: CI
+    displayName: 'CI - Build e Testes'
+    jobs:
+      - job: Build
+        displayName: 'Instalar e Configurar Java'
+        steps:
+          - task: JavaToolInstaller@0
+            displayName: 'Configurar Java 21'
+            inputs:
+              versionSpec: $(JAVA_VERSION)
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+
+          - task: Maven@4
+            displayName: 'Maven - Compilar e executar testes'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              options: ''
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              testRunTitle: $(TEST_RUN_TITLE)
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: $(JDK_VERSION)
+              mavenVersionOption: 'Default'
+
+          - task: CopyFiles@2
+            displayName: 'Preparar artefato JAR'
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)'
+              Contents: '**/target/*.jar'
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/$(ARTIFACT_NAME)'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publicar artefato app'
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/$(ARTIFACT_NAME)'
+              artifact: '$(ARTIFACT_NAME)'
+              publishLocation: 'pipeline'
+
+  - stage: CD
+    displayName: 'CD - Deploy no Azure Web App'
+    dependsOn: CI
+    condition: succeeded()
+    jobs:
+      - deployment: Deploy
+        displayName: 'Deploy Spring Boot'
+        environment: $(WEB_APP_NAME)
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: 'app'
+
+                - task: AzureAppServiceSettings@1
+                  displayName: 'Configurar variáveis de ambiente do Web App'
+                  inputs:
+                    azureSubscription: 'MyAzureSubscription'
+                    appName: '$(WEB_APP_NAME)'
+                    appSettings: |
+                      [
+                        {
+                          "name": "SPRING_DATASOURCE_USERNAME",
+                          "value": "$(SPRING_DATASOURCE_USERNAME)",
+                          "slotSetting": false
+                        },
+                        {
+                          "name": "SPRING_DATASOURCE_PASSWORD",
+                          "value": "$(SPRING_DATASOURCE_PASSWORD)",
+                          "slotSetting": false
+                        },
+                        {
+                          "name": "SPRING_DATASOURCE_URL",
+                          "value": "$(SPRING_DATASOURCE_URL)",
+                          "slotSetting": false
+                        }
+                      ]
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy via Zip Deploy'
+                  inputs:
+                    azureSubscription: 'MyAzureSubscription'
+                    appType: 'webAppLinux'
+                    appName: '$(WEB_APP_NAME)'
+                    package: '$(Pipeline.Workspace)/app/**/*.jar'
+                    deploymentMethod: 'zipDeploy'
+
