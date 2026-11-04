@@ -312,7 +312,7 @@ nano criar-infra-sprint4-clyvo.sh
 | `LOCATION` | `canadacentral` | Região dos recursos |
 | `RUNTIME` | `JAVA:21-java21` | Runtime do Web App (mesma versão do projeto) |
 | `APP_INSIGHTS_NAME` | `ai-sprint4-clyvo-rm565698` | Application Insights para logs e métricas |
-| `USERNAME` / `PASSWORD` / `URL` | dados do Oracle da FIAP | Variáveis de conexão gravadas no Web App |
+| `USERNAME` / `PASSWORD` / `URL` | dados do Oracle da FIAP (substitua `xxxxxx` pela sua senha) | Variáveis de conexão gravadas no Web App |
 
 Para salvar e sair do `nano`: **Ctrl+O**, **Enter**, **Ctrl+X**.
 
