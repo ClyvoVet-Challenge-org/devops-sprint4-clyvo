@@ -14,7 +14,7 @@ LOCATION="canadacentral"
 RUNTIME="JAVA:21-java21"
 APP_INSIGHTS_NAME="ai-sprint4-clyvo-rm565698"
 USERNAME="rm565698"
-PASSWORD="200591"
+PASSWORD="xxxxxx"
 URL="jdbc:oracle:thin:@//oracle.fiap.com.br:1521/ORCL"
 
 
