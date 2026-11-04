@@ -8,6 +8,29 @@
 
 ---
 
+## Demonstração do CI/CD (vídeo)
+
+[![Assista à demonstração do CI/CD](https://img.youtube.com/vi/MfKprPYroL0/maxresdefault.jpg)](https://www.youtube.com/watch?v=MfKprPYroL0)
+
+[Assistir à demonstração no YouTube](https://www.youtube.com/watch?v=MfKprPYroL0)
+
+<details>
+<summary>O que é mostrado no vídeo</summary>
+
+1. Organização e projeto no Azure DevOps: membros com acesso **Basic**, projeto privado, Scrum, service connection, repositório, pipeline e environment
+2. Repositório de DevOps no GitHub, arquitetura, recursos no Portal da Azure e tabelas no Oracle
+3. Configuração da pipeline: YAML (stages, jobs e tasks) e variáveis
+4. Aplicação antes da alteração, alteração visual no `home.html` e commit na branch `main` pelo Azure Repos
+5. Início automático da pipeline e explicação de cada etapa nos logs do CI e do CD
+6. Artefato publicado e resultados dos 20 testes
+7. Recursos no Portal da Azure: Web App, Centro de Implantação, variáveis de ambiente e Application Insights
+8. Aplicação no Web App com a alteração
+9. CRUD completo, com antes e depois no site e `SELECT` no Oracle a cada operação
+
+</details>
+
+---
+
 ## Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
@@ -17,12 +40,11 @@
 - [Repositórios do Projeto](#repositórios-do-projeto)
 - [Banco de Dados em Nuvem](#banco-de-dados-em-nuvem)
 - [Projeto no Azure DevOps](#projeto-no-azure-devops)
-- [Pipeline CI/CD (azure-pipelines.yml)](#pipeline-cicd-azure-pipelinesyml)
+- [Pipeline CI/CD (YAML)](#pipeline-cicd-yaml)
 - [Testes Automatizados](#testes-automatizados)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação (How-To)](#instalação-how-to)
 - [Testando o CRUD](#testando-o-crud)
-- [Demonstração do CI/CD (vídeo)](#demonstração-do-cicd-vídeo)
 - [Segurança](#segurança)
 - [Limpeza dos recursos](#limpeza-dos-recursos)
 - [Equipe](#equipe)
@@ -129,8 +151,7 @@ seu perfil.
 
 ## Banco de Dados em Nuvem
 
-- **Banco:** Oracle Database da FIAP — `oracle.fiap.com.br:1521/ORCL`
-  (opção aceita no requisito: "Oracle da FIAP").
+- **Banco:** Oracle Database da FIAP — `oracle.fiap.com.br:1521/ORCL`.
 - **Criação das tabelas:** feita pelo **Flyway** automaticamente quando a
   aplicação inicia. Não é necessário rodar nenhum script SQL manualmente.
 - **Tabelas:** 13 tabelas com prefixo `T_CLYVOJ_` + a tabela de controle
@@ -150,7 +171,7 @@ seu perfil.
 | Campo | Valor |
 |---|---|
 | **Project name** | Sprint 4 – Azure DevOps |
-| **Description** | Projeto para entrega da Sprint 4 do professor João Menk — integrantes abaixo |
+| **Description** | Projeto para entrega da Sprint 4 do professor João Carlos Menk — integrantes abaixo |
 | **Visibility** | Private |
 | **Version control** | Git |
 | **Work item process** | Scrum |
@@ -159,19 +180,20 @@ Integrantes informados na descrição do projeto:
 
 ```
 RM561713 - Eduardo Batista Locaspi - 2TDSPI
-RM561833 - Victor Alves Lopes - 2TDSPI
-RM565698 - Liana Lyumi Morisita Fujisima - 2TDSPI
 RM565799 - Letícia Santiago e Silva - 2TDSPW
+RM565698 - Liana Lyumi Morisita Fujisima - 2TDSPI
+RM561833 - Victor Alves Lopes - 2TDSPI
 ```
 
 O professor foi convidado para o projeto com nível de acesso **Basic**.
 
 ---
 
-## Pipeline CI/CD (azure-pipelines.yml)
+## Pipeline CI/CD (YAML)
 
-A pipeline é **YAML multi-stage** e fica no arquivo
-[`azure-pipelines.yml`](azure-pipelines.yml).
+A pipeline é **YAML multi-stage**. O conteúdo está no arquivo
+[`azure-pipelines.yml`](azure-pipelines.yml) deste repositório, o mesmo que
+fica salvo no Azure Repos junto com o código da aplicação.
 
 ### Gatilho (CI automático)
 ```yaml
@@ -252,7 +274,7 @@ São **20 testes JUnit**, executados no stage CI e publicados na aba
 
 Abra o **Cloud Shell** no Portal da Azure (ícone `>_`) no modo **Bash**.
 
-`git clone` — baixa este repositório para o Cloud Shell, trazendo o script `criar-infra-sprint4-clyvo.sh` e o `azure-pipelines.yml`
+`git clone` — baixa este repositório para o Cloud Shell, trazendo o script `criar-infra-sprint4-clyvo.sh` e o YAML da pipeline (`azure-pipelines.yml`)
 ```bash
 git clone https://github.com/ClyvoVet-Challenge-org/devops-sprint4-clyvo.git
 ```
@@ -346,8 +368,8 @@ Em `https://dev.azure.com/{sua-organizacao}`:
 
 1. **Repos → Import a repository → Import**
 2. **Clone URL:** `https://github.com/ClyvoVet-Challenge-org/java-clyvo.git`
-3. Como o repositório é privado, marque **Requires Authentication** e informe
-   o usuário do GitHub e um **Personal Access Token** (escopo `repo`).
+3. Se o repositório estiver privado, marque **Requires Authentication** e
+   informe o usuário do GitHub e um **Personal Access Token** (escopo `repo`).
 4. Clique em **Import** e confira em **Repos → Files** os arquivos e a
    branch `main`.
 
@@ -371,6 +393,7 @@ Em `https://dev.azure.com/{sua-organizacao}`:
 2. **Azure Repos Git (YAML)** → selecione o repositório **Sprint 4 – Azure DevOps**
 3. **Starter pipeline**
 4. Apague o conteúdo de exemplo e cole o conteúdo de [`azure-pipelines.yml`](azure-pipelines.yml)
+   (ao salvar, o Azure DevOps grava o arquivo no Azure Repos como `azure-pipelines.yml`)
 5. **Variables → New variable** e cadastre `SPRING_DATASOURCE_USERNAME`,
    `SPRING_DATASOURCE_PASSWORD` e `SPRING_DATASOURCE_URL`
    (ver [Variáveis da pipeline](#variáveis-da-pipeline)) → **Save**
@@ -425,21 +448,43 @@ dispara a pipeline sozinha: CI → artefato → CD → Web App atualizado.
 ## Testando o CRUD
 
 > O CRUD é feito pela interface da aplicação, logado como a veterinária
-> **Dra. Camila Torres** (`camila@email.com` / `senha123`). Na página inicial
-> aparecem os tutores que ela atende, com os animais de cada um e os botões
-> **+ Adicionar animal**, **Detalhes**, **Editar** e **Excluir**.
+> **Dra. Camila Torres** (`camila@email.com` / `senha123`). A tutora usada no
+> teste é a **Beatriz Almeida**, que começa com dois animais (Luna e Pipoca).
 >
-> A **evidência de persistência** de cada operação é feita com `SELECT`
-> direto no Oracle (VS Code + extensão Oracle SQL Developer).
+> Cada operação é conferida **antes e depois** em três lugares do site
+> (página inicial, página da tutora e ficha do animal) e **direto no Oracle**
+> (VS Code + extensão Oracle SQL Developer), sempre com o mesmo `SELECT`.
 >
 > **Regra de negócio:** animais que já possuem consultas não podem ser
-> excluídos (o histórico clínico é preservado). O teste de exclusão é feito
-> com o animal cadastrado no próprio teste.
+> excluídos (o histórico clínico é preservado). Por isso o teste usa um animal
+> novo, cadastrado no próprio teste.
+
+**SELECT usado em todas as etapas** — animais da Beatriz com todos os dados, inclusive o endereço
+```sql
+SELECT a.id_animal, r.nm_responsavel, a.nm_animal, a.dt_nascimento_animal,
+       a.peso_animal, a.especie_animal, a.raca_animal, a.rg_animal,
+       a.nr_microchip_animal,
+       e.pais, e.estado, e.cidade, e.bairro, e.logradouro,
+       e.nr_rua, e.complemento, e.cep
+FROM T_CLYVOJ_ANIMAL a
+JOIN T_CLYVOJ_RESPONSAVEL r ON r.id_responsavel = a.id_responsavel
+LEFT JOIN T_CLYVOJ_ENDERECO_ANIMAL e ON e.id_animal = a.id_animal
+WHERE r.nm_responsavel = 'Beatriz Almeida'
+ORDER BY a.id_animal;
+```
+
+| Etapa | Resultado esperado do SELECT |
+|---|---|
+| Antes do CREATE | 2 linhas: Luna e Pipoca |
+| Depois do CREATE | 3 linhas: + Thor, Labrador, 12 kg, com o endereço |
+| Antes do UPDATE | Thor: Labrador, 12 kg |
+| Depois do UPDATE | Thor: Labrador Retriever, 14 kg |
+| Depois do DELETE | 2 linhas: Luna e Pipoca (o Thor e o endereço dele foram removidos) |
 
 ### CREATE — Inserir um animal
 
-Na página inicial, no card da tutora **Beatriz Almeida**, clique em
-**+ Adicionar animal** e preencha:
+Na página da tutora **Beatriz Almeida** (ou no card dela na página inicial),
+clique em **Adicionar Animal** e preencha:
 
 | Campo | Valor |
 |---|---|
@@ -453,71 +498,29 @@ Na página inicial, no card da tutora **Beatriz Almeida**, clique em
 | Bairro / Logradouro / Número | `Pinheiros` / `Rua dos Pinheiros` / `320` |
 | Complemento / CEP | `Casa 2` / `05422-001` |
 
-Clique em **Salvar**: a aplicação abre a ficha do animal.
-
-**SELECT no banco**
-```sql
-SELECT id_animal, nm_animal, especie_animal, raca_animal, peso_animal, rg_animal
-FROM T_CLYVOJ_ANIMAL
-WHERE rg_animal = 'RG-900001';
-```
+Clique em **Cadastrar Animal**: a aplicação abre a ficha do Thor. Ele passa
+a aparecer no card da Beatriz na página inicial (o total de pacientes sobe
+de 13 para 14) e na página da tutora. Rode o `SELECT`: **3 linhas**.
 
 ### READ — Consultar
 
-Na ficha do animal, clique no nome da responsável (**Beatriz Almeida**):
-a página dela lista todos os seus animais, incluindo o **Thor**. Clique em
-**Detalhes** para voltar à ficha.
-
-**SELECT no banco** — animais da tutora, com o nome do responsável
-```sql
-SELECT a.id_animal, a.nm_animal, a.especie_animal, a.raca_animal, a.peso_animal,
-       r.nm_responsavel
-FROM T_CLYVOJ_ANIMAL a
-JOIN T_CLYVOJ_RESPONSAVEL r ON r.id_responsavel = a.id_responsavel
-WHERE r.nm_responsavel = 'Beatriz Almeida';
-```
+Na página da Beatriz, a lista *Animais Associados* mostra os três animais.
+Em **Detalhes**, a ficha do Thor mostra todos os dados e a responsável. O
+`SELECT` traz os mesmos três registros.
 
 ### UPDATE — Atualizar
 
 Na ficha do Thor, clique em **Editar**, altere **Peso** para `14` e **Raça**
-para `Labrador Retriever` e salve. Confira a alteração na ficha e na página
-da responsável.
-
-**SELECT no banco**
-```sql
-SELECT id_animal, nm_animal, raca_animal, peso_animal
-FROM T_CLYVOJ_ANIMAL
-WHERE rg_animal = 'RG-900001';
-```
+para `Labrador Retriever` e clique em **Editar Animal**. A alteração aparece
+na ficha, na página inicial e na página da tutora. O `SELECT` mostra
+**Labrador Retriever / 14**.
 
 ### DELETE — Excluir
 
-Na ficha do Thor (ou na linha dele na página inicial), clique em
-**Excluir** e confirme. A aplicação exibe *"Animal excluído com sucesso"* e
-o Thor some da lista da tutora. O endereço do animal é removido junto.
-
-**SELECT no banco** (deve retornar *no rows selected*)
-```sql
-SELECT id_animal, nm_animal
-FROM T_CLYVOJ_ANIMAL
-WHERE rg_animal = 'RG-900001';
-```
-
----
-
-## Demonstração do CI/CD (vídeo)
-
-[Assistir à demonstração no YouTube](COLOQUE-AQUI-O-LINK-DO-VIDEO)
-
-Roteiro demonstrado:
-1. Ferramentas utilizadas (VS Code, Azure DevOps, Portal da Azure, Oracle)
-2. Configuração da pipeline (stages, jobs, tasks e variáveis)
-3. Alteração visual no código e commit na branch `main`
-4. Início automático da pipeline e explicação de cada etapa nos logs
-5. Artefato publicado e resultados dos testes
-6. Recursos no Portal da Azure atualizados pelo deploy
-7. Aplicação no Web App com a alteração
-8. CRUD completo com `SELECT` no banco a cada operação
+Na página inicial, na linha do Thor, clique em **Excluir** e confirme. A
+aplicação exibe *"Animal excluído com sucesso"*, o Thor some do card da
+Beatriz e da página dela, e o total de pacientes volta para 13. O `SELECT`
+volta a ter **2 linhas**: o animal e o endereço dele foram removidos.
 
 ---
 
